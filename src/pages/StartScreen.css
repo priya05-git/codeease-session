@@ -1,53 +1,178 @@
+/* removed empty .rootvars rule — variables live in :root below */
+
+:root {
+  --bg-1: #2b2136;
+  --bg-2: #121217;
+  --accent-1: #db3de4;
+  --accent-2: #6be2ff;
+  --accent-3: #ffb86b;
+  --panel-bg: rgba(255,255,255,0.04);
+  --text: #eef2f7;
+  --muted: #cfcfd3;
+  --glass-border: rgba(255,255,255,0.06);
+  --radius: 18px;
+}
+
+/* Full-screen container with animated gradient backdrop */
 .container {
+  min-height: 100vh;
+  padding: 2rem;
+  box-sizing: border-box;
+
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #282c34, #3a3f47);
-  color: #fff;
-  font-family: Arial, sans-serif;
-  padding: 1rem;
-  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+
+  color: var(--text);
+  font-family: Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, system-ui, -apple-system;
+  z-index: 1;
 }
+
+/* layered animated background */
+.container::before{
+  content: "";
+  position: absolute;
+  inset: -18% -10% -18% -10%;
+  background:
+    radial-gradient(420px 220px at 8% 22%, rgba(219,61,228,0.20), transparent 18%),
+    radial-gradient(340px 200px at 88% 78%, rgba(107,226,255,0.12), transparent 12%),
+    linear-gradient(120deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  background-size: 220% 220%;
+  /* make lighter so the app-level background shows through */
+  filter: blur(24px) saturate(110%);
+  z-index: 0;
+  animation: bgFlow 16s ease-in-out infinite;
+  opacity: 0.35;
+}
+
+@keyframes bgFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* Glass panel that holds the content with animated gradient rim */
+.panel {
+  position: relative;
+  z-index: 2;
+  width: min(960px, calc(100% - 3rem));
+  padding: 2.25rem 2.5rem;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02));
+  box-shadow: 0 28px 80px rgba(6,8,12,0.7);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  border: 1px solid rgba(255,255,255,0.05);
+  text-align: center;
+  overflow: visible;
+}
+
+/* animated rim */
+.panel::before{
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: calc(var(--radius) + 2px);
+  background: conic-gradient(from 90deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+  filter: blur(12px);
+  opacity: 0.8;
+  z-index: -1;
+  animation: spin 9s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(1turn); } }
 
 .title {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: clamp(2rem, 4.5vw, 3.6rem);
+  margin: 0 0 0.6rem 0;
+  line-height: 1.03;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(90deg, var(--accent-1), #a450f2 45%, var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 12px 30px rgba(0,0,0,0.55);
+  animation: floatTitle 6s ease-in-out infinite;
 }
 
+@keyframes floatTitle{ 0%{ transform: translateY(0); } 50%{ transform: translateY(-8px); } 100%{ transform: translateY(0); } }
+
 .subtitle {
-  font-size: 1.75rem;
-  margin-bottom: 2.5rem;
-  color: #dcdcdc;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  margin: 0 0 1.75rem 0;
+  color: var(--muted);
+  max-width: 72ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .buttonContainer {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
 }
 
+/* Primary button with glossy gradient + animated glow */
 .button {
-  padding: 0.75rem 2rem;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #fff;
-  background-color: #007bff;
+  --pad-y: 0.72rem;
+  --pad-x: 1.6rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pad-y) var(--pad-x);
+  gap: 0.5rem;
+  min-height: 48px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: white;
+  text-decoration: none;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  background-image: linear-gradient(90deg, var(--accent-1), #a450f2 40%, var(--accent-2));
+  box-shadow: 0 18px 48px rgba(147,63,189,0.20), inset 0 -3px 8px rgba(0,0,0,0.25);
+  transition: transform 240ms cubic-bezier(.2,.9,.3,1), box-shadow 240ms, filter 240ms;
+  background-size: 200% 200%;
+  z-index: 3;
 }
 
-.button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+.button::after{
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 14px;
+  background: radial-gradient(60% 40% at 10% 10%, rgba(219,61,228,0.14), transparent), radial-gradient(60% 40% at 90% 90%, rgba(107,226,255,0.09), transparent);
+  filter: blur(12px);
+  z-index: -1;
+  opacity: 0.9;
+  transition: opacity 260ms;
 }
 
-.button:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+.button:hover { transform: translateY(-8px) scale(1.03); filter: saturate(1.06); box-shadow: 0 30px 70px rgba(147,63,189,0.22); }
+.button:active{ transform: translateY(-3px) scale(.996); box-shadow: 0 14px 36px rgba(63,26,90,0.18); }
+.button:focus{ outline: 3px solid rgba(107,226,255,0.12); outline-offset: 4px; }
+
+.button.secondary{
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: none;
 }
+.button.secondary:hover{ background: rgba(255,255,255,0.03); transform: translateY(-6px); }
+
+.button[disabled]{ opacity: 0.5; cursor: not-allowed; transform:none; box-shadow:none; }
+
+/* small decorative orbs that can be placed in the panel for depth */
+.orb{ position:absolute; border-radius:50%; width:12px; height:12px; background: radial-gradient(circle, rgba(255,255,255,0.9), rgba(255,255,255,0.12)); box-shadow: 0 8px 22px rgba(219,61,228,0.12); opacity:0.95; }
+.orb.orb-1{ left:8%; top:-6%; transform:scale(.95);} .orb.orb-2{ right:10%; bottom:-6%; transform:scale(1.08);} .orb.orb-3{ left:4%; bottom:-4%; transform:scale(.75);} 
+
+@media (max-width: 520px){
+  .panel{ padding:1.25rem 1.25rem; border-radius:14px; }
+  .button{ width:100%; justify-content:center; }
+  .buttonContainer{ gap:0.6rem; }
+  .title{ font-size: clamp(1.6rem, 6vw, 2.4rem); }
+  }
