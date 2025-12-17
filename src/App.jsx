@@ -1,4 +1,5 @@
 import React from "react";
+import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import StartScreen from "./pages/StartScreen";
 import GameScreen from "./pages/GameScreen";
